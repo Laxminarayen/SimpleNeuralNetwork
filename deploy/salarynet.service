@@ -1,0 +1,15 @@
+[Unit]
+Description=SalaryNet Flask app (gunicorn)
+After=network.target
+
+[Service]
+# The folder where the app lives on the VM.
+WorkingDirectory=/opt/salarynet
+# Start gunicorn with 2 worker processes, listening on port 8080.
+# app:app  means  "in app.py, use the variable named app".
+ExecStart=/opt/salarynet/venv/bin/gunicorn --workers 2 --bind 0.0.0.0:8080 app:app
+Restart=always
+User=www-data
+
+[Install]
+WantedBy=multi-user.target
