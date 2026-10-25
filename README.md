@@ -34,25 +34,29 @@ curl -X POST http://localhost:8080/api/predict \
 
 1. Create an **e2-small** VM (Debian/Ubuntu) and allow HTTP traffic.
 2. Add a firewall rule allowing **TCP 8080** (or put it behind a load balancer).
-3. SSH into the VM, clone this repo from GitHub, and run the setup script:
+3. SSH into the VM, clone this repo from GitHub, and set up the environment:
 
 ```bash
 sudo apt-get update && sudo apt-get install -y git
 git clone https://github.com/Laxminarayen/SimpleNeuralNetwork.git
 cd SimpleNeuralNetwork
-sudo bash deploy/startup.sh
+bash deploy/setup.sh          # installs Python + builds the venv
 ```
 
-To update later: `cd SimpleNeuralNetwork && git pull && sudo bash deploy/startup.sh`
-
-The app runs as a **systemd service** (`salarynet`) via **gunicorn**, so it
-restarts automatically if it crashes or the VM reboots.
+4. Start the app from the venv:
 
 ```bash
-sudo systemctl status salarynet    # check it
-sudo journalctl -u salarynet -f    # watch logs
+./venv/bin/gunicorn --workers 2 --bind 0.0.0.0:8080 app:app
 ```
 
-Visit `http://YOUR_VM_EXTERNAL_IP:8080`.
+Leave that terminal open and visit `http://YOUR_VM_EXTERNAL_IP:8080`.
+
+To keep it running after you close SSH, start it in the background instead:
+
+```bash
+nohup ./venv/bin/gunicorn --workers 2 --bind 0.0.0.0:8080 app:app > app.log 2>&1 &
+```
+
+Stop it later with `pkill gunicorn`.
 
 See **SalaryNet_Teaching_Guide.pdf** for the full classroom walkthrough.
