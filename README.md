@@ -34,14 +34,16 @@ curl -X POST http://localhost:8080/api/predict \
 
 1. Create an **e2-small** VM (Debian/Ubuntu) and allow HTTP traffic.
 2. Add a firewall rule allowing **TCP 8080** (or put it behind a load balancer).
-3. Copy this folder to the VM and run the setup script:
+3. SSH into the VM, clone this repo from GitHub, and run the setup script:
 
 ```bash
-gcloud compute scp --recurse . YOUR_VM:~/salarynet
-gcloud compute ssh YOUR_VM
-cd ~/salarynet
+sudo apt-get update && sudo apt-get install -y git
+git clone https://github.com/Laxminarayen/SimpleNeuralNetwork.git
+cd SimpleNeuralNetwork
 sudo bash deploy/startup.sh
 ```
+
+To update later: `cd SimpleNeuralNetwork && git pull && sudo bash deploy/startup.sh`
 
 The app runs as a **systemd service** (`salarynet`) via **gunicorn**, so it
 restarts automatically if it crashes or the VM reboots.
