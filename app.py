@@ -75,5 +75,4 @@ def health():
 
 
 if __name__ == "__main__":
-    # For running on your own computer. On the server we use gunicorn instead.
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080)
